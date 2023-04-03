@@ -1,3 +1,6 @@
+#i am trying to make it update the song when it changes, however still update it every 70 some seconds 
+#so if song_remaining_time is smaller then 70 secs set delay to song_remaining_time for that iteration of the loop
+
 import vrchatapi
 from vrchatapi.api import authentication_api
 from vrchatapi.models.two_factor_email_code import TwoFactorEmailCode
@@ -6,32 +9,25 @@ from vrchatapi.exceptions import UnauthorizedException
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from http.cookiejar import LWPCookieJar
-import schedule
+import sched
 import time
-import os 
+import configparser
 
+config = configparser.ConfigParser()
+config.read("info/details.ini")
+sc = sched.scheduler(time.time, time.sleep)
+
+client_id = config["SPOTIFYAUTH"]["client_id"]
+client_secret = config["SPOTIFYAUTH"]["client_secret"]
+redirect_uri = config["SPOTIFYAUTH"]["redirect_uri"]
+scope = 'user-read-playback-state'
+username = config["VRCLOGIN"]["username"]
+password = config["VRCLOGIN"]["password"]
 song=""
 duration_graphic=""
+filename = "info/cookie.txt"
+delay = 3
 
-# Add your spotify application stuff here ^^
-client_id = "" # Enter client_id
-client_secret = "" # Enter client_secret
-redirect_uri = "" # Enter redirect_url
-
-# Enter VRC login details, Will only be used if cookie expired or first time running!
-username = "" # Enter VRC username
-password = "" # Enter VRC password
-
-# Go to line 147 and enter what you would like your bio to be (
-# Write "{song}" without the quotation marks to put the song there. Looks Like: Example Song by Example Artist
-# Write "\n" without the quotation marks to make a new line in your bio. Looks like: Example Text
-#                                                                                    Example Text  
-# Write "{duration_graphic}" without the quotation marks to put the duration of the song in ur bio. Looks like: 01:58 〼〼〼〼〼〼~~~~~~~ 03:59 )
-
-filename = "cookie.txt"
-delay = 45
-scope = 'user-read-playback-state'
-os.environ['last_song'] = ""
 
 def MStoMin(ms):
     minutes, seconds = divmod(ms / 1000, 60)
@@ -56,6 +52,7 @@ def load_cookies(filename: str):
     
     for cookie in cookie_jar:
         api_client.rest_client.cookie_jar.set_cookie(cookie)
+
 
 def song_info(scope, client_id, client_secret, redirect_uri):
     
@@ -93,7 +90,9 @@ def song_info(scope, client_id, client_secret, redirect_uri):
                 break
         duration_graphic = f"{str(MStoMin(song_timestamp))} {duration_graphic} {str(MStoMin(song_duration))}"
 
-        return song, duration_graphic, 
+        seconds_remaining = ((song_duration-song_timestamp)/1000)+5
+        
+        return song, duration_graphic, seconds_remaining
     
 
 try: 
@@ -129,46 +128,35 @@ except UnauthorizedException:
                 print("Exception when calling API: %s\n", e)
         except vrchatapi.ApiException as e:
             print("Exception when calling API: %s\n", e)
+    print("logged in as", current_user.display_name, "! :3")
     save_cookies(filename=filename)
 
 def vrc_bio_change():
     song_info_ = song_info(scope, client_id, client_secret, redirect_uri)
     song = song_info_[0]
-    status_song = song
     duration_graphic = song_info_[1]
+    seconds_remaining = song_info_[2]
 
-    if song != os.environ['last_song']:
-        if len(status_song) > 28:
-            shorten_by_status = len(status_song[:-25])
-            status_song = f"{song[:-shorten_by_status]}..."
-        
-        if len(song) > 50:
-            shorten_by = len(song[:-50])
-            song = f"{song[:-shorten_by]}..."
-        if len(status_song) > 28:
-            shorten_by_status = len(status_song[:-28])
-            status_song = f"{song[:-shorten_by_status]}..."
-        status_description = f"|>: {status_song}"
-                                                                                                                                                #
-        bio=f"Hello welcome to my Example bio! \n I am listening to {song} right now! \n This is the duration of the song {duration_graphic}!"   # Enter bio here   
-                                                                                                                                                #
-        print('Updating Bio! >:3')
-        print(bio)
-        print("Also status! ^^")
-        print(status_description)
+    status_description = config['BIO']['status'].format(song = song, duration_graphic = duration_graphic)
+    if len(status_description) > 28:
+        shorten_by_status = len(status_description[:-28])
+        status_description = f"{status_description[:-shorten_by_status]}..."
+    bio=config["BIO"]["bio"].format(song = song, duration_graphic = duration_graphic)
+    print('Updating Bio! >:3')
+    print(bio)
+    print("Also status! ^^")
+    print(status_description)
 
-        update_user_request = vrchatapi.UpdateUserRequest(
-        bio=bio,
-        status_description=status_description
-        )
-        bio_request = user_api.update_user(current_user.id, update_user_request=update_user_request)
-        os.environ['last_song'] = song
+    update_user_request = vrchatapi.UpdateUserRequest(
+    bio=bio,
+    status_description=status_description
+    )
+    bio_request = user_api.update_user(current_user.id, update_user_request=update_user_request)
 
-schedule.every(delay).seconds.do(vrc_bio_change)
-while 1:
-   schedule.run_pending()
-   time.sleep(1)
+    if seconds_remaining<70.0:
+        sc.enter(seconds_remaining, 1, vrc_bio_change)
+    else:
+        sc.enter(70.0, 1, vrc_bio_change)
 
-
-
-
+sc.enter(1.0, 1, vrc_bio_change)
+sc.run()
