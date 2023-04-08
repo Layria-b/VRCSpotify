@@ -25,6 +25,8 @@ Under the [BIO] line where it says<br />
 bio =  Enter what youd like your bio to be(Read below)<br />
 status = Enter what youd like your status to be(Read below)<br />
 
+When you run the program its gonna ask for your vrchat gmail code/2fa code enter it and if your not logged into spotify on your browser it will open a webpage and youll be asked to login do so.
+
 ### Formating bio/status:
 An example of a status and what the status would look like in game is,<br />
 status = |>: {song}<br />
@@ -57,7 +59,8 @@ Example song by Example artist<br />
 
 Writing "{duration_grahic}" without the quotation marks to put the song duration there, Example:<br />
 bio={duration_graphic}<br />
+
 Would look like:<br />
 00˸00 ~~~~~~~~~~~~~ 00˸00<br />
 
-After doing that you can run VRchatSpotify.exe and it should ask you for your 2fa code/gmail code, Enter it then it should start working!
+Any issues message me: Laytia#7004
