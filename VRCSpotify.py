@@ -1,6 +1,3 @@
-#i am trying to make it update the song when it changes, however still update it every 70 some seconds 
-#so if song_remaining_time is smaller then 70 secs set delay to song_remaining_time for that iteration of the loop
-
 import vrchatapi
 from vrchatapi.api import authentication_api
 from vrchatapi.models.two_factor_email_code import TwoFactorEmailCode
@@ -12,7 +9,10 @@ from http.cookiejar import LWPCookieJar
 import sched
 import time
 import configparser
+from datetime import datetime
+import ctypes
 
+ctypes.windll.kernel32.SetConsoleTitleW("VRchatSpotify")
 config = configparser.ConfigParser()
 config.read("info/details.ini")
 sc = sched.scheduler(time.time, time.sleep)
@@ -27,7 +27,6 @@ song=""
 duration_graphic=""
 filename = "info/cookie.txt"
 delay = 3
-
 
 def MStoMin(ms):
     minutes, seconds = divmod(ms / 1000, 60)
@@ -60,14 +59,16 @@ def song_info(scope, client_id, client_secret, redirect_uri):
         scope=scope,
         client_id=client_id,
         client_secret=client_secret,
-        redirect_uri=redirect_uri)
+        redirect_uri=redirect_uri,
+        cache_path="info/.cache")
     )
 
     spotify_song_resp = sp.current_user_playing_track()
     if spotify_song_resp == None or spotify_song_resp['is_playing'] == False:
         song = 'Nothing'
         duration_graphic = "00˸00 ~~~~~~~~~~~~~ 00˸00"
-        return song, duration_graphic
+        seconds_remaining = 70.0
+        return song, duration_graphic, seconds_remaining
     else:
         track_name = spotify_song_resp['item']['name']
         artists = [artist for artist in spotify_song_resp['item']['artists']]
@@ -142,7 +143,7 @@ def vrc_bio_change():
         shorten_by_status = len(status_description[:-28])
         status_description = f"{status_description[:-shorten_by_status]}..."
     bio=config["BIO"]["bio"].format(song = song, duration_graphic = duration_graphic)
-    print('Updating Bio! >:3')
+    print(f'Updating Bio! >:3 At {datetime.now()}')
     print(bio)
     print("Also status! ^^")
     print(status_description)
