@@ -5,7 +5,7 @@ songs! ₊·*◟(˶╹̆ꇴ╹̆˵)◜‧*･
 ### How to guide:
 On steam, On VRchats page press the gear icon on the right side, Click on propertys, under the launch options section in the text box copy "run.bat %COMMAND%" into it (if you have any other launch options put them after it).<br />
 
-Download latest realease from release section, Move zip file to VRchats directory("C:\Program Files (x86)\Steam\steamapps\common\VRChat") and unzip it.<br />
+Download latest release from release section, unzip and put files in C:\Program Files (x86)\Steam\steamapps\common\VRChat.<br />
 
 For making a spotify application read https://developer.spotify.com/documentation/web-api/concepts/apps.<br />
 Make name/discription anything you like, Set the redirect uri to "http://localhost:7777/callback" without quotation marks
