@@ -3,10 +3,13 @@ I dont think its coded that good, However it was fun to make. Im am also looking
 songs! ₊·*◟(˶╹̆ꇴ╹̆˵)◜‧*･
 
 ### How to guide:
-All you need is a spotify application and a VRchat account.
-For making a spotify application read https://developer.spotify.com/documentation/web-api/concepts/apps.
+On steam, On VRchats page press the gear icon on the right side, Click on propertys, under the launch options section in the text box copy "run.bat %COMMAND%" into it (if you have any other launch options put them after it).<br />
+
+Download latest realease from release section, Move zip file to VRchats directory("C:\Program Files (x86)\Steam\steamapps\common\VRChat") and unzip it.<br />
+
+For making a spotify application read https://developer.spotify.com/documentation/web-api/concepts/apps.<br />
 Make name/discription anything you like, Set the redirect uri to "http://localhost:7777/callback" without quotation marks
-You may need to login to your spotify account on the website. ^^
+You may need to login to your spotify account when you first run the program.
 
 Go to info/details.ini and open it in notepad: <br />
 Under the [VRCLOGIN] line where it says <br />
