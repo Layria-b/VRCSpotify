@@ -133,6 +133,13 @@ except UnauthorizedException:
     save_cookies(filename=filename)
 
 def vrc_bio_change():
+    call = 'TASKLIST', '/FI', 'imagename eq %s' % "VRChat.exe"
+    output = subprocess.check_output(call).decode()
+    last_line = output.strip().split('\r\n')[-1]
+    if last_line.lower().startswith("VRChat.exe".lower()) == False:
+        print("VRChat closed exiting...")
+        exit()
+    
     song_info_ = song_info(scope, client_id, client_secret, redirect_uri)
     song = song_info_[0]
     duration_graphic = song_info_[1]
