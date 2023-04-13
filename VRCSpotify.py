@@ -11,6 +11,7 @@ import time
 import configparser
 from datetime import datetime
 import ctypes
+import subprocess
 
 ctypes.windll.kernel32.SetConsoleTitleW("VRchatSpotify")
 config = configparser.ConfigParser()
@@ -27,6 +28,15 @@ song=""
 duration_graphic=""
 filename = "info/cookie.txt"
 delay = 3
+
+call = 'TASKLIST', '/FI', 'imagename eq %s' % "VRChat.exe"
+output = subprocess.check_output(call).decode()
+last_line = output.strip().split('\r\n')[-1]
+while last_line.lower().startswith("VRChat.exe".lower()) == False:
+    output = subprocess.check_output(call).decode()
+    last_line = output.strip().split('\r\n')[-1]
+    print("Waiting for VRC to open...")
+    time.sleep(60)
 
 def MStoMin(ms):
     minutes, seconds = divmod(ms / 1000, 60)
@@ -139,7 +149,7 @@ def vrc_bio_change():
     if last_line.lower().startswith("VRChat.exe".lower()) == False:
         print("VRChat closed exiting...")
         exit()
-    
+
     song_info_ = song_info(scope, client_id, client_secret, redirect_uri)
     song = song_info_[0]
     duration_graphic = song_info_[1]
