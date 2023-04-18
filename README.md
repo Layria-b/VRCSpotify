@@ -10,18 +10,18 @@ Go on VRchats homepage on steam and hover over the gear icon on the rightside of
 ### Configuring:
 Go to info/details.ini and open it in notepad enter appropriate info: <br />
 ```
-[VRCLOGIN]<br />
-username =  Enter your VRchat username<br />
-password =  Enter your VRchat password<br />
+[VRCLOGIN]
+username =  Enter your VRchat username
+password =  Enter your VRchat password
 
-[SPOTIFYAUTH]<br />
-client_id =  Enter your spotify client ID<br />
-client_secret =  Enter your spotify client secret<br />
-redirect_uri =  Enter the redirect url for your spotify application<br />
+[SPOTIFYAUTH]
+client_id =  Enter your spotify client ID
+client_secret =  Enter your spotify client secret
+redirect_uri =  Enter the redirect url for your spotify application
 
 [BIO]
-bio =  Enter what youd like your bio to be<br />
-status = Enter what youd like your status to be<br />
+bio =  Enter what youd like your bio to be
+status = Enter what youd like your status to be
 ```
 
 ### Formating bio/status:
